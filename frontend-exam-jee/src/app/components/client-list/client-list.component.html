@@ -1,0 +1,45 @@
+<div class="container">
+  <div class="header">
+    <h2>Liste des Clients</h2>
+    <button (click)="toggleForm()" class="btn btn-primary">
+      {{ showForm ? 'Annuler' : 'Ajouter Client' }}
+    </button>
+  </div>
+
+  <div *ngIf="showForm" class="form-container card">
+    <h3>{{ 'Ajouter un nouveau client' }}</h3>
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmitClient()">
+      <div class="form-group">
+        <label for="nom">Nom:</label>
+        <input id="nom" type="text" formControlName="nom" class="form-control">
+        <div *ngIf="clientForm.get('nom')?.invalid && (clientForm.get('nom')?.dirty || clientForm.get('nom')?.touched)" class="error-message">
+          <small *ngIf="clientForm.get('nom')?.errors?.['required']">Le nom est requis.</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input id="email" type="email" formControlName="email" class="form-control">
+        <div *ngIf="clientForm.get('email')?.invalid && (clientForm.get('email')?.dirty || clientForm.get('email')?.touched)" class="error-message">
+          <small *ngIf="clientForm.get('email')?.errors?.['required']">L'email est requis.</small>
+          <small *ngIf="clientForm.get('email')?.errors?.['email']">Format d'email invalide.</small>
+        </div>
+      </div>
+      <button type="submit" [disabled]="clientForm.invalid" class="btn btn-success">Enregistrer</button>
+    </form>
+  </div>
+
+  <div *ngIf="clients.length > 0; else noClients" class="client-list">
+    <div *ngFor="let client of clients" class="client-item card">
+      <div class="client-info">
+        <strong>{{ client.nom }}</strong> ({{ client.email }})
+        <small class="client-id">ID: {{ client.id }}</small>
+      </div>
+      <button (click)="deleteClient(client.id, $event)" class="btn btn-danger btn-sm">Supprimer</button>
+    </div>
+  </div>
+
+  <ng-template #noClients>
+    <p class="text-muted">Aucun client à afficher pour le moment.</p>
+  </ng-template>
+</div>
